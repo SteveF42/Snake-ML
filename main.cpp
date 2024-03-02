@@ -1,9 +1,13 @@
 #include<iostream>
-
-
+#include"Engine.hpp"
 
 int main()
 {
-    std::cout << "Hello, World!" << std::endl;
+    Engine engine;
+    while(engine.IsRunning())
+    {
+        engine.Update();
+        engine.Render();
+    }
     return 0;
 }
