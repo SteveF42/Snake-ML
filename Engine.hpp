@@ -8,9 +8,11 @@ class Engine
 private:
     sf::RenderWindow window;
     int targetResolution;
-    int width;
+    int width, height;
+    int offset;
     bool isRunning;
     int rows;
+    int gap;
     Snake* snake;
 
 public:
