@@ -10,12 +10,28 @@ enum eDirection
     DOWN
 };
 
+struct snakePosition
+{
+    snakePosition(int x, int y)
+    {
+        this->x = x;
+        this->y = y;
+    }
+    snakePosition()
+    {
+        x = -1;
+        y = -1;
+    }
+    int x;
+    int y;
+};
+
 class Snake
 {
 private:
     eDirection dir;
     int length;
-    int *tailX, *tailY;
+    snakePosition *tail;
     bool gameOver;
     int fruitX, fruitY;
     int score;
@@ -24,8 +40,7 @@ private:
 public:
     Snake(int w, int h);
     int GetLength();
-    int GetTailX(int i);
-    int GetTailY(int i);
+    snakePosition GetTail(int i);
     void Setup();
     void Input();
     void Logic();

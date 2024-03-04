@@ -12,24 +12,17 @@ void Snake::Setup()
 {
     gameOver = false;
     dir = eDirection::STOP;
-    tailX = new int[width];
-    tailY = new int[height];
+    tail = new snakePosition[width * height];
     fruitX = rand() % width;
     fruitY = rand() % height;
     score = 0;
     length = 1;
-    tailX[0] = width / 2;
-    tailY[0] = height / 2;
+    tail[0] = snakePosition(width / 2, height / 2);
 }
 
-int Snake::GetTailX(int i)
+snakePosition Snake::GetTail(int i)
 {
-    return tailX[i];
-}
-
-int Snake::GetTailY(int i)
-{
-    return tailY[i];
+    return tail[i];
 }
 
 int Snake::GetLength()

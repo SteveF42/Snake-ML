@@ -58,7 +58,8 @@ void Engine::DrawSnake()
     for (int i = 0; i < snake->GetLength(); i++)
     {
         sf::RectangleShape bodyPart(sf::Vector2f(gap, gap));
-        bodyPart.setPosition(snake->GetTailX(i) * gap, snake->GetTailY(i) * gap);
+        snakePosition tail = snake->GetTail(i);
+        bodyPart.setPosition(tail.x * gap, tail.y * gap);
         bodyPart.setFillColor(green);
         window.draw(bodyPart);
     }
