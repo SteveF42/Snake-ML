@@ -43,7 +43,10 @@ public:
     snakePosition GetTail(int i);
     void Setup();
     void Input();
-    void Logic();
+    void Move();
+    int GetFruitX() { return fruitX; };
+    int GetFruitY() { return fruitY; };
+    void SetFruit();
     bool GetGameOver();
     int GetScore();
 };

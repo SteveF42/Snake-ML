@@ -1,5 +1,6 @@
 #include "engine.hpp"
 
+const int SQUARE_OFFSET = 2;
 Engine::Engine(int rows)
 {
     this->rows = rows;
@@ -7,9 +8,10 @@ Engine::Engine(int rows)
     this->height = width;
     this->gap = width / rows;
     this->snake = new Snake(rows, rows);
-    this->offset = 4 * gap;
+    this->offset = (SQUARE_OFFSET * 2) * gap;
     isRunning = true;
     window.create(sf::VideoMode(width + offset, height + offset), "Snake Game");
+    window.setFramerateLimit(20);
 }
 
 void Engine::Update()
@@ -21,7 +23,19 @@ void Engine::Update()
         {
             isRunning = false;
         }
+        if (snake->GetGameOver() && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            snake->Setup();
+        }
     }
+
+    if (!snake->GetGameOver())
+    {
+        snake->Input();
+        snake->Move();
+    }
+
+    DrawFruit();
     DrawGrid();
     DrawSnake();
 }
@@ -59,10 +73,21 @@ void Engine::DrawSnake()
     {
         sf::RectangleShape bodyPart(sf::Vector2f(gap, gap));
         snakePosition tail = snake->GetTail(i);
-        bodyPart.setPosition(tail.x * gap, tail.y * gap);
+        bodyPart.setPosition((tail.x + SQUARE_OFFSET) * gap, (tail.y + SQUARE_OFFSET) * gap);
         bodyPart.setFillColor(green);
         window.draw(bodyPart);
     }
+}
+
+void Engine::DrawFruit()
+{
+    int gap = width / rows;
+    sf::Color red(255, 0, 0);
+    sf::RectangleShape fruit(sf::Vector2f(gap, gap));
+
+    fruit.setPosition((snake->GetFruitX() + SQUARE_OFFSET) * gap, (snake->GetFruitY() + SQUARE_OFFSET) * gap);
+    fruit.setFillColor(red);
+    window.draw(fruit);
 }
 
 void Engine::Render()

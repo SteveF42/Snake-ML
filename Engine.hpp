@@ -23,6 +23,7 @@ public:
     void Render();
     bool IsRunning();
     void DrawSnake();
+    void DrawFruit();
     sf::RenderWindow *GetWindow();
 };
 
