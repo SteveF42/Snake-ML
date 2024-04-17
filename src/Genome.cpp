@@ -61,6 +61,8 @@ void Genome::initialize()
     {
         for (int j = 0; j < outputs; j++)
         {
+            if(randDouble(0, 1) > Config::initialConnectionProbability)
+                continue;
             LinkPtr newLink = make_shared<LinkGene>(allNodes[j + inputs].get(), allNodes[i].get(), randDouble(-1, 1), idx++);
             allNodes[i]->addToLink(*newLink);
             allLinks.insert({newLink->getID(), newLink});
@@ -311,6 +313,8 @@ void Genome::mutate()
 
 void Genome::addNode()
 {
+    if(allLinks.size() == 0)
+        return;
     // get a random link
     LinkGene *link = getRandomLink();
     // disable the link
@@ -402,11 +406,11 @@ void Genome::removeLink()
     LinkGene *link = it->second.get();
 
     // prevents input and output links from being removed
-    if (link->getFromNode()->getType() == INPUT && link->getToNode()->getType() == OUTPUT)
-    {
-        link->setEnabled(false);
-        return;
-    }
+    // if (link->getFromNode()->getType() == INPUT && link->getToNode()->getType() == OUTPUT)
+    // {
+    //     link->setEnabled(false);
+    //     return;
+    // }
     link->getFromNode()->removeLink(*link);
     allLinks.erase(link->getID());
 }

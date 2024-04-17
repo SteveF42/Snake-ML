@@ -68,22 +68,7 @@ void Snake::Move()
     {
         gameOver = true;
     }
-    // if (tail[0].x >= width)
-    // {
-    //     tail[0].x = 0;
-    // }
-    // else if (tail[0].x < 0)
-    // {
-    //     tail[0].x = width - 1;
-    // }
-    // if (tail[0].y >= height)
-    // {
-    //     tail[0].y = 0;
-    // }
-    // else if (tail[0].y < 0)
-    // {
-    //     tail[0].y = height - 1;
-    // }
+
     for (int i = 1; i < length; i++)
     {
         if (tail[0].x == tail[i].x && tail[0].y == tail[i].y)
@@ -151,20 +136,68 @@ double Snake::foodRight()
 
 double Snake::wallUp()
 {
-    return 1 - (tail[0].y) / static_cast<double>(height);
+    return (tail[0].y) / static_cast<double>(height);
 }
 
 double Snake::wallDown()
 {
-    return 1 - (height - tail[0].y) / static_cast<double>(height);
+    return (height - tail[0].y) / static_cast<double>(height);
 }
 
 double Snake::wallLeft()
 {
-    return 1 - (tail[0].x) / static_cast<double>(width);
+    return (tail[0].x) / static_cast<double>(width);
 }
 
 double Snake::wallRight()
 {
-    return 1 - (width - tail[0].x) / static_cast<double>(width);
+    return (width - tail[0].x) / static_cast<double>(width);
+}
+
+double Snake::bodyUp()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].y > tail[i].y and tail[0].x == tail[i].x)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyDown()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].y < tail[i].y and tail[0].x == tail[i].x)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyLeft()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].x > tail[i].x and tail[0].y == tail[i].y)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyRight()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].x < tail[i].x and tail[0].y == tail[i].y)
+        {
+            return 1;
+        }
+    }
+    return 0;
 }

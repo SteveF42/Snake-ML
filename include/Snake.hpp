@@ -58,6 +58,10 @@ public:
     double wallDown();
     double wallLeft();
     double wallRight();
+    double bodyUp();
+    double bodyDown();
+    double bodyLeft();
+    double bodyRight();
     double distanceFromFruit();
     eDirection GetDirection() { return dir; }
     void SetFruit();

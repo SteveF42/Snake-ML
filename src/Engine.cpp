@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 const int SQUARE_OFFSET = 2;
-Engine::Engine(int rows) : Neat(9, 4)
+Engine::Engine(int rows) : Neat(8, 4)
 {
     this->rows = rows;
     this->width = 1200;
@@ -106,6 +106,7 @@ double Engine::playGame(Genome *genome)
     double fitness = 0;
     int moveLimit = 0;
     int totalSteps = 0;
+    double penalty = 0;
     Init();
     while (true)
     {
@@ -120,7 +121,7 @@ double Engine::playGame(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
-            snake->distanceFromFruit()};
+        };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;
         double max = output[0];
@@ -133,7 +134,7 @@ double Engine::playGame(Genome *genome)
             }
         }
 
-        eDirection dir = snake->GetDirection();
+        eDirection dir, snakeDir = snake->GetDirection();
 
         if (idx == 0 and snake->GetDirection() != DOWN)
             dir = UP;
@@ -158,7 +159,7 @@ double Engine::playGame(Genome *genome)
         }
         totalSteps++;
     }
-    return fitness + (totalSteps / MAX_STEPS);
+    return fitness;
 }
 
 void Engine::testNetwork(Genome *genome)
@@ -180,7 +181,7 @@ void Engine::testNetwork(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
-            snake->distanceFromFruit()};
+        };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;
         double max = output[0];
