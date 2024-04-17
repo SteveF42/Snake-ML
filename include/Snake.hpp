@@ -1,5 +1,6 @@
 #ifndef SNAKE_HPP
 #define SNAKE_HPP
+#include <memory>
 
 enum eDirection
 {
@@ -26,12 +27,15 @@ struct snakePosition
     int y;
 };
 
+using std::unique_ptr;
+typedef unique_ptr<snakePosition[]> SnakePtr;
+
 class Snake
 {
 private:
     eDirection dir;
     int length;
-    snakePosition *tail;
+    SnakePtr tail;
     bool gameOver;
     int fruitX, fruitY;
     int score;
@@ -42,10 +46,20 @@ public:
     int GetLength();
     snakePosition GetTail(int i);
     void Setup();
-    void Input();
+    void Input(eDirection dir);
     void Move();
     int GetFruitX() { return fruitX; };
     int GetFruitY() { return fruitY; };
+    double foodUp();
+    double foodDown();
+    double foodLeft();
+    double foodRight();
+    double wallUp();
+    double wallDown();
+    double wallLeft();
+    double wallRight();
+    double distanceFromFruit();
+    eDirection GetDirection() { return dir; }
     void SetFruit();
     bool GetGameOver();
     int GetScore();
