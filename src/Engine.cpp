@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 const int SQUARE_OFFSET = 2;
-Engine::Engine(int rows) : Neat(8, 4)
+Engine::Engine(int rows) : Neat(12, 4)
 {
     this->rows = rows;
     this->width = 1200;
@@ -10,6 +10,11 @@ Engine::Engine(int rows) : Neat(8, 4)
     this->snake = new Snake(rows, rows);
     this->offset = (SQUARE_OFFSET * 2) * gap;
     isRunning = true;
+}
+
+void Engine::InitScreen()
+{
+
     window.create(sf::VideoMode(width + offset, height + offset), "Snake Game");
     window.setFramerateLimit(40);
 }
@@ -106,6 +111,7 @@ double Engine::playGame(Genome *genome)
     double fitness = 0;
     int moveLimit = 0;
     int totalSteps = 0;
+    const int MAX_STEPS = 200;
     double penalty = 0;
     Init();
     while (true)
@@ -121,6 +127,10 @@ double Engine::playGame(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
+            snake->bodyUp(),
+            snake->bodyDown(),
+            snake->bodyLeft(),
+            snake->bodyRight(),
         };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;
@@ -154,12 +164,11 @@ double Engine::playGame(Genome *genome)
         }
         if (snake->GetGameOver() || moveLimit++ > MAX_STEPS)
         {
-            fitness = snake->GetScore();
             break;
         }
         totalSteps++;
     }
-    return fitness;
+    return (fitness * 100) + totalSteps / 10;
 }
 
 void Engine::testNetwork(Genome *genome)
@@ -168,6 +177,7 @@ void Engine::testNetwork(Genome *genome)
     int moveLimit = 0;
     int totalSteps = 0;
     Init();
+    InitScreen();
     while (isRunning)
     {
         Update();
@@ -181,6 +191,10 @@ void Engine::testNetwork(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
+            snake->bodyUp(),
+            snake->bodyDown(),
+            snake->bodyLeft(),
+            snake->bodyRight(),
         };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;

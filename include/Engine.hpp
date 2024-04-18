@@ -15,7 +15,7 @@ private:
     int rows;
     int gap;
     Snake *snake;
-    int MAX_STEPS = 100;
+    void InitScreen();
 
 protected:
     double playGame(Genome *genome) override;

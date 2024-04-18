@@ -6,12 +6,12 @@
 int main()
 {
     Engine engine;
-    engine.initialize(2500);
+    engine.initialize(2000);
     std::thread t1([&engine](){
         DisplayNetwork display(engine);
         display.run();
     });
-    engine.train(250);
+    engine.train(500);
     engine.test();
     return 0;
 }

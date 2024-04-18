@@ -136,26 +136,28 @@ double Snake::foodRight()
 
 double Snake::wallUp()
 {
-    return (tail[0].y) / static_cast<double>(height);
+    return (height - tail[0].y) / height;
 }
 
 double Snake::wallDown()
 {
-    return (height - tail[0].y) / static_cast<double>(height);
+    return (tail[0].y + 1) / height;
 }
 
 double Snake::wallLeft()
 {
-    return (tail[0].x) / static_cast<double>(width);
+    return (width - tail[0].x) / width;
 }
 
 double Snake::wallRight()
 {
-    return (width - tail[0].x) / static_cast<double>(width);
+    return (tail[0].x + 1) / width;
 }
 
 double Snake::bodyUp()
 {
+    if (dir == DOWN)
+        return 0;
     for (int i = 1; i < length; i++)
     {
         if (tail[0].y > tail[i].y and tail[0].x == tail[i].x)
@@ -168,6 +170,9 @@ double Snake::bodyUp()
 
 double Snake::bodyDown()
 {
+    if (dir == UP)
+        return 0;
+
     for (int i = 1; i < length; i++)
     {
         if (tail[0].y < tail[i].y and tail[0].x == tail[i].x)
@@ -180,7 +185,9 @@ double Snake::bodyDown()
 
 double Snake::bodyLeft()
 {
-    for (int i = 1; i < length; i++)
+    if (dir == RIGHT)
+        return 0;
+    for (int i = 0; i < length; i++)
     {
         if (tail[0].x > tail[i].x and tail[0].y == tail[i].y)
         {
@@ -192,11 +199,61 @@ double Snake::bodyLeft()
 
 double Snake::bodyRight()
 {
-    for (int i = 1; i < length; i++)
+    if (dir == LEFT)
+        return 0;
+    for (int i = 0; i < length; i++)
     {
         if (tail[0].x < tail[i].x and tail[0].y == tail[i].y)
         {
             return 1;
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyUpDistance()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].y > tail[i].y and tail[0].x == tail[i].x)
+        {
+            return 1 - static_cast<double>(tail[0].y - tail[i].y) / (height - 1);
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyDownDistance()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].y < tail[i].y and tail[0].x == tail[i].x)
+        {
+            return 1 - static_cast<double>(tail[i].y - tail[0].y) / (height - 1);
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyLeftDistance()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].x > tail[i].x and tail[0].y == tail[i].y)
+        {
+            return 1 - static_cast<double>(tail[0].x - tail[i].x) / (width - 1);
+        }
+    }
+    return 0;
+}
+
+double Snake::bodyRightDistance()
+{
+    for (int i = 1; i < length; i++)
+    {
+        if (tail[0].x < tail[i].x and tail[0].y == tail[i].y)
+        {
+            return 1 - static_cast<double>(tail[i].x - tail[0].x) / (width - 1);
         }
     }
     return 0;

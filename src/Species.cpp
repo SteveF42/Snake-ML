@@ -16,6 +16,11 @@ int Species::getSpeciesSize()
     return members.size();
 }
 
+vector<Genome *> Species::getMembers() const
+{
+    return members;
+}
+
 void Species::setLeader(Genome *leader)
 {
     members.push_back(leader);
@@ -55,7 +60,7 @@ void Species::evaluateScore()
 Genome *Species::breed()
 {
     int size = members.size();
-    Genome *g1 = members[size - 1];
+    Genome *g1 = members[randNumber(size)];
     Genome *g2 = members[randNumber(size)];
 
     if (g1->getFitness() > g2->getFitness())

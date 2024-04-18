@@ -61,8 +61,6 @@ void Genome::initialize()
     {
         for (int j = 0; j < outputs; j++)
         {
-            if(randDouble(0, 1) > Config::initialConnectionProbability)
-                continue;
             LinkPtr newLink = make_shared<LinkGene>(allNodes[j + inputs].get(), allNodes[i].get(), randDouble(-1, 1), idx++);
             allNodes[i]->addToLink(*newLink);
             allLinks.insert({newLink->getID(), newLink});
@@ -129,7 +127,7 @@ double Genome::distance(const Genome &other)
             }
         }
 
-        excess = std::max(s1 - idx1, s2 - idx2);
+        excess = p1 == this->allLinks.end() ? s2 - idx2 : s1 - idx1;
         weightDiff /= similar;
     }
     else if (s1 > 0)
@@ -162,7 +160,7 @@ Genome *Genome::crossGenomes(const Genome &dominant, const Genome &recessive)
         }
         else
         {
-            NodeGene* t = crossNeurons(*dominantNeuron, *recessiveNeuron);
+            NodeGene *t = crossNeurons(*dominantNeuron, *recessiveNeuron);
             newNode = NodePtr(t);
         }
 
@@ -313,7 +311,7 @@ void Genome::mutate()
 
 void Genome::addNode()
 {
-    if(allLinks.size() == 0)
+    if (allLinks.size() == 0)
         return;
     // get a random link
     LinkGene *link = getRandomLink();
@@ -451,20 +449,20 @@ void Genome::shiftBias()
     node->setBias(adjustBias);
 }
 
-NodeGene* Genome::crossNeurons(const NodeGene &lhs, const NodeGene &rhs)
+NodeGene *Genome::crossNeurons(const NodeGene &lhs, const NodeGene &rhs)
 {
     int id = lhs.getID();
-    double bias = randNumber(1) == 0 ? lhs.getBias() : rhs.getBias();
+    double bias = randNumber(2) == 0 ? lhs.getBias() : rhs.getBias();
 
-    NodeGene* newNode = new NodeGene(id, lhs.getType(), bias);
+    NodeGene *newNode = new NodeGene(id, lhs.getType(), bias);
     return newNode;
 }
 
 // CHANGE ALL NODES VECTOR TO AN UNORDERED MAP FOR FASTER ACCESS TIMES AND EASIER NODE DELETION
 LinkGene *Genome::crossLinks(const LinkGene &lhs, const LinkGene &rhs)
 {
-    double weight = randNumber(1) == 0 ? lhs.getWeight() : rhs.getWeight();
-    bool enabled = randNumber(1) == 0 ? lhs.isEnabled() : rhs.isEnabled();
+    double weight = randNumber(2) == 0 ? lhs.getWeight() : rhs.getWeight();
+    bool enabled = randNumber(2) == 0 ? lhs.isEnabled() : rhs.isEnabled();
     auto child = new LinkGene(lhs.getFromNode(), lhs.getToNode(), weight, lhs.getID());
     child->setEnabled(enabled);
     return child;
@@ -534,7 +532,7 @@ NodeGene *Genome::findNode(int nodeID) const
 
 LinkGene *Genome::findLink(int linkID) const
 {
-    if(allLinks.find(linkID) != allLinks.end())
+    if (allLinks.find(linkID) != allLinks.end())
     {
         return allLinks.at(linkID).get();
     }

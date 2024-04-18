@@ -10,6 +10,7 @@ public:
     Genome* getLeader() const;
     double getScore();
     int getSpeciesSize();
+    vector<Genome*> getMembers() const;
 
     void setLeader(Genome* leader);
     void setScore(double score);

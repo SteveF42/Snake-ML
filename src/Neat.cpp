@@ -85,7 +85,7 @@ void Neat::trainGeneration()
     }
     std::cout << "Generation: " << genCount
               << " Average Fitness: " << avgFitness / population
-              << " Best Fitness: " << bestGenome.getFitness() 
+              << " Best Fitness: " << bestGenome.getFitness()
               << " Species Count: " << allSpecies.size() << '\n';
 }
 
@@ -147,9 +147,19 @@ void Neat::kill()
 void Neat::breed()
 {
     vector<GenomePtr> newGenomes;
+    // copy parents that survived
+    for (const auto &species : allSpecies)
+    {
+        for (const auto &member : species->getMembers())
+        {
+            newGenomes.push_back(GenomePtr(new Genome(*member)));
+        }
+    }
+
+    int populationRemainder = population - newGenomes.size();
     int size = allSpecies.size();
-    int children = population / size;
-    int remainder = population - children * size;
+    int children = (populationRemainder) / size;
+    int remainder = populationRemainder - children * size;
 
     for (const auto &species : allSpecies)
     {
@@ -172,6 +182,10 @@ void Neat::mutate()
 {
     for (const auto &genome : allGenomes)
     {
-        genome->mutate();
+        if (randDouble(0, 1) <= Config::mutationRate)
+        {
+            if (randDouble(0, 1) < Config::mutationRate)
+                genome->mutate();
+        }
     }
 }
