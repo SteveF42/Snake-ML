@@ -40,8 +40,8 @@ public:
     static Genome *crossGenomes(const Genome &dominant, const Genome &recessive);
 
     vector<double> activate(vector<double> inputs);
-    map<int, LinkPtr>& getLinks();
-    map<int, NodePtr>& getNodes();
+    map<int, LinkPtr> &getLinks();
+    map<int, NodePtr> &getNodes();
     map<int, networkLayer> getLayers();
 
     // mutations
@@ -56,9 +56,11 @@ public:
     void buildLayers();
 
     Genome operator=(const Genome &other);
+    bool child = false;
 
     inline static const int INPUT_LAYER = -2;
     inline static const int OUTPUT_LAYER = -1;
+
 private:
     double fitness;
     int inputs;
@@ -68,7 +70,7 @@ private:
     map<int, LinkPtr> allLinks;
     map<int, networkLayer> layers;
 
-    static NodeGene* crossNeurons(const NodeGene &lhs, const NodeGene &rhs);
+    static NodeGene *crossNeurons(const NodeGene &lhs, const NodeGene &rhs);
     static LinkGene *crossLinks(const LinkGene &lhs, const LinkGene &rhs);
 
     // util

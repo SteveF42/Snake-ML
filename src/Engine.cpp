@@ -108,12 +108,14 @@ bool Engine::IsRunning()
 
 double Engine::playGame(Genome *genome)
 {
-    double fitness = 0;
+    Init();
+    double score = 0;
+    double bonus = 0;
     int moveLimit = 0;
     int totalSteps = 0;
-    const int MAX_STEPS = 200;
+    const int MAX_STEPS = 100;
     double penalty = 0;
-    Init();
+    double prevDistance = snake->distanceFromFruit();
     while (true)
     {
         // Update();
@@ -127,10 +129,10 @@ double Engine::playGame(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
-            snake->bodyUp(),
-            snake->bodyDown(),
-            snake->bodyLeft(),
-            snake->bodyRight(),
+            snake->bodyUpDistance(),
+            snake->bodyDownDistance(),
+            snake->bodyLeftDistance(),
+            snake->bodyRightDistance(),
         };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;
@@ -146,20 +148,36 @@ double Engine::playGame(Genome *genome)
 
         eDirection dir, snakeDir = snake->GetDirection();
 
-        if (idx == 0 and snake->GetDirection() != DOWN)
+        if (idx == 0)
             dir = UP;
-        else if (idx == 1 and snake->GetDirection() != UP)
+        else if (idx == 1)
             dir = DOWN;
-        else if (idx == 2 and snake->GetDirection() != RIGHT)
+        else if (idx == 2)
             dir = LEFT;
-        else if (idx == 3 and snake->GetDirection() != LEFT)
+        else if (idx == 3)
             dir = RIGHT;
+
+        if ((dir == UP && snakeDir == DOWN) || (dir == DOWN && snakeDir == UP) ||
+            (dir == LEFT && snakeDir == RIGHT) || (dir == RIGHT && snakeDir == LEFT))
+        {
+            penalty += 50;
+            dir = snakeDir;
+        }
 
         snake->Input(dir);
         snake->Move();
-        if (snake->GetScore() > fitness)
+        if (snake->distanceFromFruit() < prevDistance)
         {
-            fitness = snake->GetScore();
+            bonus += 0.1;
+        }
+        else if (snake->distanceFromFruit() > prevDistance)
+        {
+            penalty += 0.1;
+        }
+        prevDistance = snake->distanceFromFruit();
+        if (snake->GetScore() > score)
+        {
+            score = snake->GetScore();
             moveLimit = 0;
         }
         if (snake->GetGameOver() || moveLimit++ > MAX_STEPS)
@@ -168,7 +186,7 @@ double Engine::playGame(Genome *genome)
         }
         totalSteps++;
     }
-    return (fitness * 100) + totalSteps / 10;
+    return (score * 100) + (totalSteps / 10) - penalty + bonus;
 }
 
 void Engine::testNetwork(Genome *genome)
@@ -191,10 +209,10 @@ void Engine::testNetwork(Genome *genome)
             snake->wallDown(),
             snake->wallLeft(),
             snake->wallRight(),
-            snake->bodyUp(),
-            snake->bodyDown(),
-            snake->bodyLeft(),
-            snake->bodyRight(),
+            snake->bodyUpDistance(),
+            snake->bodyDownDistance(),
+            snake->bodyLeftDistance(),
+            snake->bodyRightDistance(),
         };
         std::vector<double> output = genome->activate(inputs);
         int idx = 0;
@@ -210,13 +228,13 @@ void Engine::testNetwork(Genome *genome)
 
         eDirection dir = snake->GetDirection();
 
-        if (idx == 0 and snake->GetDirection() != DOWN)
+        if (idx == 0)
             dir = UP;
-        else if (idx == 1 and snake->GetDirection() != UP)
+        else if (idx == 1)
             dir = DOWN;
-        else if (idx == 2 and snake->GetDirection() != RIGHT)
+        else if (idx == 2)
             dir = LEFT;
-        else if (idx == 3 and snake->GetDirection() != LEFT)
+        else if (idx == 3)
             dir = RIGHT;
 
         snake->Input(dir);

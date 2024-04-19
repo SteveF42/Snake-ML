@@ -152,7 +152,9 @@ void Neat::breed()
     {
         for (const auto &member : species->getMembers())
         {
-            newGenomes.push_back(GenomePtr(new Genome(*member)));
+            GenomePtr eliteGenome = make_unique<Genome>(*member);
+            eliteGenome->child = false;
+            newGenomes.push_back(std::move(eliteGenome));
         }
     }
 
@@ -165,14 +167,18 @@ void Neat::breed()
     {
         for (int i = 0; i < children; i++)
         {
-            newGenomes.push_back(GenomePtr(species->breed()));
+            GenomePtr child = GenomePtr(species->breed());
+            child->child = true;
+            newGenomes.push_back(std::move(child));
         }
     }
 
     for (int i = 0; i < remainder; i++)
     {
         int index = randNumber(size);
-        newGenomes.push_back(GenomePtr(allSpecies[index]->breed()));
+        GenomePtr child = GenomePtr(allSpecies[index]->breed());
+        child->child = true;
+        newGenomes.push_back(std::move(child));
     }
     allGenomes.clear();
     this->allGenomes = std::move(newGenomes);
@@ -182,10 +188,7 @@ void Neat::mutate()
 {
     for (const auto &genome : allGenomes)
     {
-        if (randDouble(0, 1) <= Config::mutationRate)
-        {
-            if (randDouble(0, 1) < Config::mutationRate)
-                genome->mutate();
-        }
+        if (randDouble(0, 1) <= Config::mutationRate && genome->child)
+            genome->mutate();
     }
 }
