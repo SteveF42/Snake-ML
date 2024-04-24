@@ -56,12 +56,16 @@ void Genome::initialize()
     layers.insert({INPUT_LAYER, inputLayer});
 
     // initialize links
-    int idx = 0;
+    int idx = -1;
     for (int i = 0; i < inputs; i++)
     {
         for (int j = 0; j < outputs; j++)
         {
-            LinkPtr newLink = make_shared<LinkGene>(allNodes[j + inputs].get(), allNodes[i].get(), randDouble(-1, 1), idx++);
+            idx++;
+            if (randDouble(0, 1) > Config::initialLinkProbability)
+                continue;
+
+            LinkPtr newLink = make_shared<LinkGene>(allNodes[j + inputs].get(), allNodes[i].get(), randDouble(-1, 1), idx);
             allNodes[i]->addToLink(*newLink);
             allLinks.insert({newLink->getID(), newLink});
         }
@@ -128,7 +132,7 @@ double Genome::distance(const Genome &other)
         }
 
         excess = p1 == this->allLinks.end() ? s2 - idx2 : s1 - idx1;
-        weightDiff /= similar;
+        weightDiff = similar == 0 ? 0 : weightDiff / similar;
     }
     else if (s1 > 0)
     {

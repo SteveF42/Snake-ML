@@ -27,8 +27,23 @@ snakePosition Snake::GetTail(int i)
 
 void Snake::SetFruit()
 {
-    fruitX = rand() % width;
-    fruitY = rand() % height;
+    //fruit wont spawn on da snake
+    auto isOnSnake = [this](int x, int y)
+    {
+        for (int i = 0; i < length; i++)
+        {
+            if (tail[i].x == x && tail[i].y == y)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+    do
+    {
+        fruitX = rand() % width;
+        fruitY = rand() % height;
+    } while (isOnSnake(fruitX, fruitY));
 }
 
 void Snake::Input(eDirection dir)
@@ -74,6 +89,7 @@ void Snake::Move()
         if (tail[0].x == tail[i].x && tail[0].y == tail[i].y)
         {
             gameOver = true;
+            score -= 5;
         }
     }
 }
@@ -207,9 +223,9 @@ double Snake::bodyUpDistance()
 
     for (int i = 1; i < length; i++)
     {
-        if (tail[0].y > tail[i].y and tail[0].x == tail[i].x)
+        if (tail[0].y >= tail[i].y and tail[0].x == tail[i].x)
         {
-            return 1 - (abs(tail[0].y - tail[i].y) / (height));
+            return (abs(tail[0].y - tail[i].y) / (height));
         }
     }
     return 0;
@@ -220,9 +236,9 @@ double Snake::bodyDownDistance()
 
     for (int i = 1; i < length; i++)
     {
-        if (tail[0].y < tail[i].y and tail[0].x == tail[i].x)
+        if (tail[0].y <= tail[i].y and tail[0].x == tail[i].x)
         {
-            return 1 - (abs(tail[i].y - tail[0].y) / (height));
+            return (abs(tail[i].y - tail[0].y) / (height));
         }
     }
     return 0;
@@ -233,9 +249,9 @@ double Snake::bodyLeftDistance()
 
     for (int i = 1; i < length; i++)
     {
-        if (tail[0].x > tail[i].x and tail[0].y == tail[i].y)
+        if (tail[0].x >= tail[i].x and tail[0].y == tail[i].y)
         {
-            return 1 - (abs(tail[0].x - tail[i].x) / (width));
+            return (abs(tail[0].x - tail[i].x) / (width));
         }
     }
     return 0;
@@ -246,9 +262,9 @@ double Snake::bodyRightDistance()
 
     for (int i = 1; i < length; i++)
     {
-        if (tail[0].x < tail[i].x and tail[0].y == tail[i].y)
+        if (tail[0].x <= tail[i].x and tail[0].y == tail[i].y)
         {
-            return 1 - (abs(tail[i].x - tail[0].x) / (width));
+            return (abs(tail[i].x - tail[0].x) / (width));
         }
     }
     return 0;

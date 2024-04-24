@@ -22,9 +22,12 @@ public:
 
     void clear();
 
+    void setNumOfChildren(int num);
+    int getNumOfChildren();
 private:
     Genome* leader;
     double score;
+    int numOfChildren;
     vector<Genome*> members;
 };
 

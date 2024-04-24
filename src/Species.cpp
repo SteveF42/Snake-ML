@@ -73,3 +73,13 @@ void Species::clear()
 {
     members.clear();
 }
+
+void Species::setNumOfChildren(int num)
+{
+    numOfChildren = num;
+}
+
+int Species::getNumOfChildren()
+{
+    return numOfChildren;
+}

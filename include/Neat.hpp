@@ -36,6 +36,7 @@ protected:
     int output;
     int population;
     int genCount = 0;
+    double avgFitness = 0;
     Genome bestGenome;
     vector<GenomePtr> allGenomes;
     vector<SpeciesPtr> allSpecies;
