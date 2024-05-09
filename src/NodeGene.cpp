@@ -13,10 +13,10 @@ NodeGene::NodeGene(int id, NodeType type, double bias)
     this->bias = bias;
     this->type = type;
 }
-NodeGene::NodeGene(NodeType type, double bias)
+NodeGene::NodeGene(NodeType type)
 {
     this->id = nextID++;
-    this->bias = bias;
+    this->bias = randDouble(-1, 1);
     this->type = type;
 }
 NodeGene::NodeGene(NodeGene &other)
@@ -95,6 +95,5 @@ void NodeGene::setNextID(int id)
 
 NodePtr NodeGene::getNewNode()
 {
-    double bias = randDouble(-1, 1);
-    return std::make_shared<NodeGene>(HIDDEN, bias);
+    return std::make_shared<NodeGene>(HIDDEN);
 }

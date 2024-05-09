@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 const int SQUARE_OFFSET = 2;
-Engine::Engine(int rows) : Neat(16, 4)
+Engine::Engine(int rows) : Neat(16, 4, 1)
 {
     this->rows = rows;
     this->width = 1200;

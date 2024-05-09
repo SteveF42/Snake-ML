@@ -8,15 +8,18 @@
 
 using std::make_shared;
 
-Genome::Genome(int inputs, int outputs, bool initInputs)
+Genome::Genome(int inputs, int outputs, bool initInputs, int hidden)
 {
     this->inputs = inputs;
     this->outputs = outputs;
+    this->hidden = hidden;
     this->fitness = 0;
+    this->adjustedFitness = 0;
 
     if (initInputs)
     {
         initialize();
+        buildLayers();
     }
     // initialize inputs and outputs
 }
@@ -25,7 +28,9 @@ Genome::Genome(const Genome &other)
 {
     this->inputs = other.inputs;
     this->outputs = other.outputs;
+    this->hidden = other.hidden;
     this->fitness = other.fitness;
+    this->adjustedFitness = other.adjustedFitness;
     this->allNodes = other.allNodes;
     this->allLinks = other.allLinks;
     this->layers = other.layers;
@@ -42,6 +47,8 @@ void Genome::initialize()
 {
     networkLayer inputLayer(INPUT);
     networkLayer outputLayer(OUTPUT);
+    networkLayer hiddenLayer(HIDDEN);
+    int HIDDEN_LAYER = 0;
     for (int i = 0; i < inputs; i++)
     {
         allNodes.insert({i, make_shared<NodeGene>((int)i, INPUT)});
@@ -55,19 +62,34 @@ void Genome::initialize()
     layers.insert({OUTPUT_LAYER, outputLayer});
     layers.insert({INPUT_LAYER, inputLayer});
 
-    // initialize links
-    int idx = -1;
-    for (int i = 0; i < inputs; i++)
+    vector<int> layerOrder = {INPUT_LAYER, OUTPUT_LAYER};
+    if (hidden > 0)
     {
-        for (int j = 0; j < outputs; j++)
+        layerOrder = {INPUT_LAYER, HIDDEN_LAYER, OUTPUT_LAYER};
+        for (int i = 0; i < hidden; i++)
         {
-            idx++;
-            if (randDouble(0, 1) > Config::initialLinkProbability)
-                continue;
+            int id = inputs + outputs + i;
+            allNodes.insert({id, make_shared<NodeGene>(id, HIDDEN)});
+            hiddenLayer.addNode(allNodes[id].get());
+        }
+        layers.insert({HIDDEN_LAYER, hiddenLayer});
+    }
 
-            LinkPtr newLink = make_shared<LinkGene>(allNodes[j + inputs].get(), allNodes[i].get(), randDouble(-1, 1), idx);
-            allNodes[i]->addToLink(*newLink);
-            allLinks.insert({newLink->getID(), newLink});
+    int idx = -1;
+    for (int i = 0; i < layerOrder.size() - 1; i++)
+    {
+        for (const auto &fromNode : layers[layerOrder[i]].nodes)
+        {
+            for (const auto &toNode : layers[layerOrder[i + 1]].nodes)
+            {
+                idx++;
+                if (randDouble(0, 1) > Config::initialLinkProbability)
+                    continue;
+
+                LinkPtr newLink = make_shared<LinkGene>(toNode, fromNode, randDouble(-1, 1), idx);
+                fromNode->addToLink(*newLink);
+                allLinks.insert({newLink->getID(), newLink});
+            }
         }
     }
 }
@@ -81,6 +103,21 @@ double Genome::getFitness()
 void Genome::setFitness(double fitness)
 {
     this->fitness = fitness;
+}
+
+void Genome::setAdjustedFitness(double adjustedFitness)
+{
+    this->adjustedFitness = adjustedFitness;
+}
+
+double Genome::getAdjustedFitness()
+{
+    return adjustedFitness;
+}
+
+double Genome::getComplexity()
+{
+    return allLinks.size();
 }
 
 double Genome::distance(const Genome &other)

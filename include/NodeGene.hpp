@@ -22,7 +22,7 @@ class NodeGene
 {
 public:
     NodeGene(int id, NodeType type);
-    NodeGene(NodeType type, double bias);
+    NodeGene(NodeType type);
     NodeGene(int id, NodeType type, double bias);
     NodeGene(NodeGene &other);
     void addToLink(const LinkGene &link);

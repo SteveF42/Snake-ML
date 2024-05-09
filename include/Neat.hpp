@@ -18,7 +18,7 @@ typedef unique_ptr<Species> SpeciesPtr;
 class Neat
 {
 public:
-    Neat(int input, int output);
+    Neat(int input, int output, int hidden = 0);
     void initialize(int population = 500);
     void train(int genCount);
     void evolve();
@@ -34,6 +34,7 @@ public:
 protected:
     int input;
     int output;
+    int hidden;
     int population;
     int genCount = 0;
     double avgFitness = 0;

@@ -28,12 +28,15 @@ struct networkLayer
 class Genome
 {
 public:
-    Genome(int inputs, int outputs, bool initInputs = true);
+    Genome(int inputs, int outputs, bool initInputs = true, int hidden = 0);
     Genome(const Genome &other);
     Genome() {}
     ~Genome();
     void initialize();
     double getFitness();
+    void setAdjustedFitness(double adjustedFitness);
+    double getAdjustedFitness();
+    double getComplexity();
     void setFitness(double fitness);
     void mutate();
     double distance(const Genome &other);
@@ -63,8 +66,10 @@ public:
 
 private:
     double fitness;
+    double adjustedFitness;
     int inputs;
     int outputs;
+    int hidden;
     // first n + m nodes are inputs and outputs
     map<int, NodePtr> allNodes;
     map<int, LinkPtr> allLinks;

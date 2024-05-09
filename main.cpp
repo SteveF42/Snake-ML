@@ -6,12 +6,12 @@
 int main()
 {
     Engine engine;
-    engine.initialize(1000);
+    engine.initialize(2000);
     std::thread t1([&engine](){
         DisplayNetwork display(engine);
         display.run();
     });
-    engine.train(1000);
+    engine.train(500);
     engine.test();
     Genome g = engine.getBestGenome();
     std::cout << "Best Genome: " << g.getFitness() << '\n'

@@ -8,6 +8,7 @@ class Species
 {
 public:
     Genome* getLeader() const;
+    Genome* getMember(int idx);
     double getScore();
     int getSpeciesSize();
     vector<Genome*> getMembers() const;
